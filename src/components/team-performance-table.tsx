@@ -49,17 +49,17 @@ export function TeamPerformanceTable({ employees }: TeamPerformanceTableProps) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {employees.map((employee) => {
-            const totalIssues = employee.allIssues
-            const resolvedIssues = employee.closedAPDIssues + employee.closedPRODIssues
+          {employees?.map((employee) => {
+            const totalIssues = employee?.allIssues
+            const resolvedIssues = employee.closedAPDIssues + employee?.closedPRODIssues
             const resolutionRate = totalIssues > 0 ? (resolvedIssues / totalIssues) * 100 : 0
             
             return (
-              <TableRow key={employee.id}>
+              <TableRow key={employee?.id}>
                 <TableCell className="font-medium">
                   <div className="flex flex-col">
-                    <span>{employee.userName.split('@')[0]}</span>
-                    <span className="text-xs text-muted-foreground">{employee.userName}</span>
+                    <span>{employee?.userName.split('@')[0]}</span>
+                    <span className="text-xs text-muted-foreground">{employee?.userName}</span>
                   </div>
                 </TableCell>
                 <TableCell>
@@ -68,17 +68,17 @@ export function TeamPerformanceTable({ employees }: TeamPerformanceTableProps) {
                     <Progress value={resolutionRate} className="h-2 w-24 mt-1" />
                   </div>
                 </TableCell>
-                <TableCell>{resolutionRate.toFixed(1)}%</TableCell>
-                <TableCell>{employee.allBlocker}</TableCell>
-                <TableCell>{employee.allBugs}</TableCell>
+                <TableCell>{resolutionRate?.toFixed(1)}%</TableCell>
+                <TableCell>{employee?.allBlocker}</TableCell>
+                <TableCell>{employee?.allBugs}</TableCell>
                 <TableCell>
                   <div className="flex items-center">
-                    <span className="font-medium mr-2">{employee.ratings.toFixed(1)}</span>
+                    <span className="font-medium mr-2">{employee?.ratings.toFixed(1)}</span>
                     <div className="flex">
                       {[...Array(5)].map((_, i) => (
                         <svg 
                           key={i} 
-                          className={`w-4 h-4 ${i < Math.floor(employee.ratings) ? 'text-yellow-400' : 'text-gray-300'}`} 
+                          className={`w-4 h-4 ${i < Math.floor(employee?.ratings) ? 'text-yellow-400' : 'text-gray-300'}`} 
                           fill="currentColor" 
                           viewBox="0 0 20 20"
                         >
@@ -89,8 +89,8 @@ export function TeamPerformanceTable({ employees }: TeamPerformanceTableProps) {
                   </div>
                 </TableCell>
                 <TableCell>
-                  <Badge variant={employee.ratings >= 4 ? "default" : employee.ratings >= 3 ? "outline" : "destructive"}>
-                    {employee.ratings >= 4 ? "Excellent" : employee.ratings >= 3 ? "Good" : "Needs Improvement"}
+                  <Badge variant={employee?.ratings >= 4 ? "default" : employee?.ratings >= 3 ? "outline" : "destructive"}>
+                    {employee?.ratings >= 4 ? "Excellent" : employee?.ratings >= 3 ? "Good" : "Needs Improvement"}
                   </Badge>
                 </TableCell>
               </TableRow>

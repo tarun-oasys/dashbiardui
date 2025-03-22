@@ -22,14 +22,11 @@ const formSchema = z.object({
   employeeName: z.string().min(2, {
     message: "Employee name must be at least 2 characters.",
   }),
-  startDate: z.date({
-    required_error: "Start date is required.",
-  }),
-  endDate: z.date({
-    required_error: "End date is required.",
-  }),
+  startDate: z.date().optional(),
+  endDate: z.date().optional(),
   notes: z.string().optional(),
-})
+});
+
 
 export default function AddEmployeePage() {
   const router = useRouter()
@@ -50,10 +47,10 @@ export default function AddEmployeePage() {
       // Format dates to YYYY-MM-DD
       const formattedValues = {
         userName: values.employeeName,
-        startDate: format(values.startDate, "yyyy-MM-dd"),
-        endDate: format(values.endDate, "yyyy-MM-dd"),
-        notes: values.notes,
-      }
+        startDate: values.startDate ? format(values.startDate, "yyyy-MM-dd") : null,
+        endDate: values.endDate ? format(values.endDate, "yyyy-MM-dd") : null,
+        notes: values.notes ?? "", // Ensure notes is always a string
+      };
 
       // In a real app, you would replace this with your actual API endpoint
       // const response = await fetch("/api/employees", {
@@ -85,20 +82,20 @@ export default function AddEmployeePage() {
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-background to-muted p-4">
       <Card className="w-full max-w-lg animate-fade-in">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold">Add Employee Record</CardTitle>
-          <CardDescription>Enter employee details to create a new performance record</CardDescription>
+          <CardTitle className="text-2xl font-bold">Performance Entry Form</CardTitle>
+          <CardDescription>Enter employee details to get performance record</CardDescription>
         </CardHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <CardContent className="space-y-6">
               <FormField
-                control={form.control}
+                control={form?.control}
                 name="employeeName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Employee Name</FormLabel>
+                    <FormLabel>Employee Username</FormLabel>
                     <FormControl>
-                      <Input placeholder="John Doe" {...field} />
+                      <Input placeholder="john.doe" {...field} />
                     </FormControl>
                     <FormDescription>Enter the full name or email of the employee.</FormDescription>
                     <FormMessage />
@@ -187,7 +184,7 @@ export default function AddEmployeePage() {
               />
             </CardContent>
             <CardFooter>
-              <Button type="submit" className="w-full" disabled={isSubmitting}>
+              <Button type="submit" className="w-full mt-5" disabled={isSubmitting}>
                 {isSubmitting ? "Submitting..." : "Submit"}
               </Button>
             </CardFooter>

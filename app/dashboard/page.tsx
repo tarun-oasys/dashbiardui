@@ -46,6 +46,7 @@ interface EmployeeData {
   allBugs: number
   allBlocker: number
   ratings: number
+  issues5xx: number
 }
 
 
@@ -77,56 +78,60 @@ export default function DashboardPage() {
         
         await new Promise(resolve => setTimeout(resolve, 1500))
         // const data = await fetch ('https://sit8.1atesting.in/jira/api/issueCount?userName=aditya.semwal%40oneassist.in&startDate=2023-04-01&endDate=2025-03-22')
-        const mockData: EmployeeData = {
-          id: 11,
-          userName: "mahboob.hasan@oneassist.in",
-          accountId: "5b5e9ed83eb9962cd052a360",
-          startDate: "2024-04-01",
-          endDate: "2025-03-22",
-          openAPDIssues: 5,
-          closedAPDIssues: 15,
-          openPRODIssues: 3,
-          closedPRODIssues: 12,
-          openBlockerAPDIssues: 1,
-          closedBlockerAPDIssues: 4,
-          openBlockerPRODIssues: 0,
-          closedBlockerPRODIssues: 2,
-          openAPDBugIssues: 2,
-          closedAPDBugIssues: 8,
-          openPRODBugIssues: 1,
-          closedPRODBugIssues: 6,
-          delayedIssues: 3,
-          allIssues: 37,
-          allBugs: 17,
-          allBlocker: 7,
-          ratings: 4.2
-        }
+        // const mockData: EmployeeData = {
+        //   id: 11,
+        //   userName: "mahboob.hasan@oneassist.in",
+        //   accountId: "5b5e9ed83eb9962cd052a360",
+        //   startDate: "2024-04-01",
+        //   endDate: "2025-03-22",
+        //   openAPDIssues: 5,
+        //   closedAPDIssues: 15,
+        //   openPRODIssues: 3,
+        //   closedPRODIssues: 12,
+        //   openBlockerAPDIssues: 1,
+        //   closedBlockerAPDIssues: 4,
+        //   openBlockerPRODIssues: 0,
+        //   closedBlockerPRODIssues: 2,
+        //   openAPDBugIssues: 2,
+        //   closedAPDBugIssues: 8,
+        //   openPRODBugIssues: 1,
+        //   closedPRODBugIssues: 6,
+        //   delayedIssues: 3,
+        //   allIssues: 37,
+        //   allBugs: 17,
+        //   allBlocker: 7,
+        //   ratings: 4.2
+        // }
         
         // Create a few more mock entries with different values
-        const mockEmployees = [
-          mockData,
-          {
-            ...mockData,
-            id: 12,
-            userName: "john.doe@oneassist.in",
-            openAPDIssues: 3,
-            closedAPDIssues: 18,
-            ratings: 4.5,
-            allIssues: 42
-          },
-          {
-            ...mockData,
-            id: 13,
-            userName: "jane.smith@oneassist.in",
-            openPRODIssues: 2,
-            closedPRODIssues: 14,
-            ratings: 3.8,
-            allIssues: 31
-          }
-        ]
+        // const mockEmployees = [
+        //   mockData,
+        //   {
+        //     ...mockData,
+        //     id: 12,
+        //     userName: "tarun.verma@oneassist.in",
+        //     openAPDIssues: 3,
+        //     closedAPDIssues: 18,
+        //     ratings: 4.5,
+        //     allIssues: 35,
+        //     allBlocker: 2,
+        //     allBugs: 8,
+        //   },
+        //   {
+        //     ...mockData,
+        //     id: 13,
+        //     userName: "jane.smith@oneassist.in",
+        //     openPRODIssues: 2,
+        //     closedPRODIssues: 14,
+        //     ratings: 3.8,
+        //     allIssues: 31,
+        //     allBlocker: 4,
+        //     allBugs: 1,
+        //   }
+        // ]
         
-        setEmployees(mockEmployees);
-        setFilteredEmployees(mockEmployees);
+        // setEmployees([mockEmployees]);
+        // setFilteredEmployees([mockEmployees]);
         setIsLoading(false)
       } catch (err) {
         console.error('Error fetching employees:', err)
@@ -135,23 +140,27 @@ export default function DashboardPage() {
       }
     }
 
-    fetchEmployees()
+    // fetchEmployees()
   }, [])
 
   useEffect(() => {
     if (queryParams) {
-      // fetchData(queryParams);
+      fetchData(queryParams);
     }
   }, [queryParams]);
 
   const fetchData = async ({ userName, startDate, endDate }) => {
     try {
       const response = await fetch(
-        `https://sit8.1atesting.in/jira/api/issueCount?userName=${encodeURIComponent(userName)}&startDate=${startDate}&endDate=${endDate}`
+        `https://amos.1atesting.in/jira/api/issueCount?userName=${userName}&startDate=${startDate}&endDate=${endDate}`
       );
       const result = await response.json();
-      console.log(result);
+      console.log(result, 'result');
+      setEmployees([result]);
+      setFilteredEmployees([result]);
+    setIsLoading(false)
     } catch (error) {
+      setIsLoading(false)
       console.error("Error fetching data:", error);
     }
   };
@@ -167,7 +176,7 @@ export default function DashboardPage() {
       setFilteredEmployees(employees);
     } else {
       setFilteredEmployees(
-        employees.filter(emp => emp.userName.toLowerCase().includes(searchQuery.toLowerCase()))
+        employees.filter(emp => emp?.userName.toLowerCase().includes(searchQuery.toLowerCase()))
       );
     }
   }, [searchQuery, employees]);
@@ -191,20 +200,20 @@ export default function DashboardPage() {
     )
   }
 
-  const totalDefectsRaised = filteredEmployees.reduce(
-    (sum, emp) => sum + emp.allIssues, 
-    0
-  )
+  // const totalDefectsRaised = filteredEmployees.reduce(
+  //   (sum, emp) => sum + emp.allIssues, 
+  //   0
+  // )
   
-  const productionDefects = filteredEmployees.reduce(
-    (sum, emp) => sum + emp.openPRODIssues + emp.closedPRODIssues, 
-    0
-  )
+  // const productionDefects = filteredEmployees.reduce(
+  //   (sum, emp) => sum + emp.openPRODIssues + emp.closedPRODIssues, 
+  //   0
+  // )
   
-  const blockerDefects = filteredEmployees.reduce(
-    (sum, emp) => sum + emp.allBlocker, 
-    0
-  )
+  // const blockerDefects = filteredEmployees.reduce(
+  //   (sum, emp) => sum + emp.allBlocker, 
+  //   0
+  // )
   
   const defectDensity = 3.8
   
@@ -306,13 +315,13 @@ export default function DashboardPage() {
             />
           </div>
             <Button variant="outline" size="icon" className="rounded-full">
-              <img
+              {/* <img
                 src="/placeholder-user.jpg"
                 alt="Avatar"
                 className="rounded-full"
                 height="32"
                 width="32"
-              />
+              /> */}
               <span className="sr-only">Toggle user menu</span>
             </Button>
           </div>
@@ -339,7 +348,7 @@ export default function DashboardPage() {
                         <p className="text-sm font-medium text-muted-foreground">Defects Raised</p>
                         <AlertCircle className="h-4 w-4 text-destructive" />
                       </div>
-                      <div className="text-3xl font-bold">{totalDefectsRaised}</div>
+                      <div className="text-3xl font-bold">{employees[0].allIssues}</div>
                       <div className="flex items-center text-xs text-green-500">
                         <ArrowUp className="mr-1 h-3 w-3" />
                         <span>12% vs last month</span>
@@ -356,7 +365,7 @@ export default function DashboardPage() {
                         <p className="text-sm font-medium text-muted-foreground">Production Defects</p>
                         <AlertCircle className="h-4 w-4 text-amber-500" />
                       </div>
-                      <div className="text-3xl font-bold">{productionDefects}</div>
+                      <div className="text-3xl font-bold">{employees[0].openPRODIssues}</div>
                       <div className="flex items-center text-xs text-red-500">
                         <ArrowDown className="mr-1 h-3 w-3" />
                         <span>8% vs last month</span>
@@ -373,7 +382,7 @@ export default function DashboardPage() {
                         <p className="text-sm font-medium text-muted-foreground">Blocker Defects</p>
                         <AlertCircle className="h-4 w-4 text-blue-500" />
                       </div>
-                      <div className="text-3xl font-bold">{blockerDefects}</div>
+                      <div className="text-3xl font-bold">{employees[0].allBlocker}</div>
                       <div className="flex items-center text-xs text-green-500">
                         <ArrowUp className="mr-1 h-3 w-3" />
                         <span>15% vs last month</span>
@@ -493,7 +502,7 @@ export default function DashboardPage() {
                     <Skeleton className="h-12 w-full" />
                   </div>
                 ) : (
-                  <TeamPerformanceTable employees={filteredEmployees} />
+                  <TeamPerformanceTable employees={employees} />
                 )}
               </CardContent>
             </Card>
