@@ -75,8 +75,6 @@ export default function DashboardPage() {
     // In a real app, you would fetch from your actual API
     const fetchEmployees = async () => {
       try {
-        
-        await new Promise(resolve => setTimeout(resolve, 1500))
         // const data = await fetch ('https://sit8.1atesting.in/jira/api/issueCount?userName=aditya.semwal%40oneassist.in&startDate=2023-04-01&endDate=2025-03-22')
         // const mockData: EmployeeData = {
         //   id: 11,
@@ -500,10 +498,10 @@ export default function DashboardPage() {
               <CardContent className="p-6">
                 <div className="mb-4 flex items-center justify-between">
                   <h3 className="text-lg font-medium">Team Performance</h3>
-                  <Button variant="outline" onClick={handleExportToExcel}>
+                  {/* <Button variant="outline" onClick={handleExportToExcel}>
                     <FileSpreadsheet className="mr-2 h-4 w-4" />
                     Export to Excel
-                  </Button>
+                  </Button> */}
                 </div>
                 {isLoading ? (
                   <div className="space-y-2">

@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { CalendarIcon } from "lucide-react"
 import { format } from "date-fns"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 import { Button } from "../../src/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../src/components/ui/card"
@@ -15,7 +16,7 @@ import { Input } from "../../src/components/ui/input"
 import { Textarea } from "../../src/components/ui/textarea"
 import { Calendar } from "../../src/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "../../src/components/ui/popover"
-import { cn } from "../../src/lib/utils"
+import { cn, users } from "../../src/lib/utils"
 import { toast } from "sonner"
 
 const formSchema = z.object({
@@ -88,20 +89,31 @@ export default function AddEmployeePage() {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <CardContent className="space-y-6">
-              <FormField
-                control={form?.control}
-                name="employeeName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Employee Username</FormLabel>
-                    <FormControl>
-                      <Input placeholder="john.doe" {...field} />
-                    </FormControl>
-                    <FormDescription>Enter the full name or email of the employee.</FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <FormField
+  control={form?.control}
+  name="employeeName"
+  render={({ field }) => (
+    <FormItem>
+      <FormLabel>Employee Username</FormLabel>
+      <FormControl>
+        <Select  onValueChange={field.onChange} defaultValue={field.value}>
+          <SelectTrigger>
+            <SelectValue placeholder="Select an employee" />
+          </SelectTrigger>
+          <SelectContent>
+            {users.map((user, idx) => (
+              <SelectItem key={idx} value={user?.Assginee}>
+                {user?.Assginee}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </FormControl>
+      <FormDescription>Enter the full name or email of the employee.</FormDescription>
+      <FormMessage />
+    </FormItem>
+  )}
+/>
 
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <FormField
