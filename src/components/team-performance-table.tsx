@@ -58,7 +58,7 @@ export function TeamPerformanceTable({ employees }: TeamPerformanceTableProps) {
               <TableRow key={employee?.id}>
                 <TableCell className="font-medium">
                   <div className="flex flex-col">
-                    <span>{employee?.userName.split('@')[0]}</span>
+                    <span>{employee?.userName?.split('@')[0]}</span>
                     <span className="text-xs text-muted-foreground">{employee?.userName}</span>
                   </div>
                 </TableCell>

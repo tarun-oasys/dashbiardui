@@ -7,7 +7,7 @@ import { Button } from "../../src/components/ui/button"
 import { Progress } from "../../src/components/ui/progress"
 import { Badge } from "../../src/components/ui/badge"
 import { Skeleton } from "../../src/components/ui/skeleton"
-import { AlertCircle, Bug, Download, FileSpreadsheet, Clock, ArrowUp, ArrowDown, Search } from 'lucide-react'
+import { AlertCircle, AlertTriangle, Bug, Download, FileSpreadsheet, Clock, ArrowUp, ArrowDown, Search } from 'lucide-react'
 import Link from "next/link"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../src/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../src/components/ui/table"
@@ -67,7 +67,7 @@ export default function DashboardPage() {
       const startDate = urlParams.get("startDate");
       const endDate = urlParams.get("endDate");
 
-      if (userName && startDate && endDate) {
+      if (userName) {
         setQueryParams({ userName, startDate, endDate });
       }
     }
@@ -154,12 +154,16 @@ export default function DashboardPage() {
       const response = await fetch(
         `https://amos.1atesting.in/jira/api/issueCount?userName=${userName}&startDate=${startDate}&endDate=${endDate}`
       );
-      const result = await response.json();
-      console.log(result, 'result');
-      setEmployees([result]);
-      setFilteredEmployees([result]);
-    setIsLoading(false)
+      if(response.ok){
+        const result = await response.json();
+        setEmployees([result]);
+        setFilteredEmployees([result]);
+        setIsLoading(false)
+      }else{
+        throw new Error('Failed to fetch employee data')
+      }
     } catch (error) {
+      setError('Failed to load employee data. Please try again later.')
       setIsLoading(false)
       console.error("Error fetching data:", error);
     }
@@ -171,34 +175,16 @@ export default function DashboardPage() {
   }
 
 
-  useEffect(() => {
-    if (searchQuery.trim() === "") {
-      setFilteredEmployees(employees);
-    } else {
-      setFilteredEmployees(
-        employees.filter(emp => emp?.userName.toLowerCase().includes(searchQuery.toLowerCase()))
-      );
-    }
-  }, [searchQuery, employees]);
+  // useEffect(() => {
+  //   if (searchQuery.trim() === "") {
+  //     setFilteredEmployees(employees);
+  //   } else {
+  //     setFilteredEmployees(
+  //       employees?.filter(emp => emp?.userName.toLowerCase().includes(searchQuery.toLowerCase()))
+  //     );
+  //   }
+  // }, [searchQuery, employees]);
 
-
-  if (error) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <Card className="w-full max-w-md">
-          <CardContent className="p-6">
-            <p className="text-destructive font-medium mb-4">{error}</p>
-            <Button 
-              variant="outline" 
-              onClick={() => window.location.reload()}
-            >
-              Try Again
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    )
-  }
 
   // const totalDefectsRaised = filteredEmployees.reduce(
   //   (sum, emp) => sum + emp.allIssues, 
@@ -218,6 +204,31 @@ export default function DashboardPage() {
   const defectDensity = 3.8
   
   const taskDelay = "24h"
+
+
+  if (error) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
+      <div className="w-full max-w-md shadow-md border border-gray-200 bg-white rounded-xl p-6 text-center animate-fade-in">
+        
+        {/* Error Icon with Subtle Shake Effect */}
+        <AlertCircle className="text-red-400 w-14 h-14 mb-4 animate-shake mx-auto" />
+
+        {/* Error Message */}
+        <p className="text-gray-700 font-medium text-lg mb-4">{error}</p>
+
+        {/* Retry Button */}
+        <Button 
+          variant="outline" 
+          onClick={() => window.location.reload()}
+          className="transition-transform transform hover:scale-105 hover:bg-gray-100 hover:cursor-pointer hover:bg-red-600 hover:text-white"
+        >
+          Try Again
+        </Button>
+      </div>
+    </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen bg-background">
@@ -453,7 +464,7 @@ export default function DashboardPage() {
                       </Select>
                     </div>
                     <div className="flex h-[280px] items-center justify-center">
-                      <PerformanceRatingChart rating={4} maxRating={5} />
+                      <PerformanceRatingChart rating={employees[0]?.ratings} maxRating={5} />
                     </div>
                   </CardContent>
                 </Card>

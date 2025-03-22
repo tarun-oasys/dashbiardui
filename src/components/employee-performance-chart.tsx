@@ -83,7 +83,7 @@ export function EmployeePerformanceChart({ employees }: EmployeePerformanceChart
     const barWidth = chartWidth / (employees.length * 2 + (employees.length - 1))
     employees.forEach((emp, i) => {
       const x = padding + i * 3 * barWidth + barWidth * 1.5
-      ctx.fillText(emp.userName.split("@")[0], x, height - padding + 20)
+      ctx.fillText(emp?.userName?.split("@")[0], x, height - padding + 20)
     })
 
     // Y-axis labels

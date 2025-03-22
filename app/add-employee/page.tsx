@@ -47,8 +47,8 @@ export default function AddEmployeePage() {
       // Format dates to YYYY-MM-DD
       const formattedValues = {
         userName: values.employeeName,
-        startDate: values.startDate ? format(values.startDate, "yyyy-MM-dd") : null,
-        endDate: values.endDate ? format(values.endDate, "yyyy-MM-dd") : null,
+        startDate: values.startDate ? format(values.startDate, "yyyy-MM-dd") : "",
+        endDate: values.endDate ? format(values.endDate, "yyyy-MM-dd") : "",
         notes: values.notes ?? "", // Ensure notes is always a string
       };
 
