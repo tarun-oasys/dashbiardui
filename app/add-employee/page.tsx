@@ -8,6 +8,9 @@ import { z } from "zod"
 import { CalendarIcon } from "lucide-react"
 import { format } from "date-fns"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { DatePicker } from "antd";
+import dayjs from "dayjs";
+import "dayjs/locale/en";
 
 import { Button } from "../../src/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../../src/components/ui/card"
@@ -115,67 +118,48 @@ export default function AddEmployeePage() {
   )}
 />
 
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                <FormField
-                  control={form.control}
-                  name="startDate"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                      <FormLabel>Start Date</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant={"outline"}
-                              className={cn(
-                                "w-full pl-3 text-left font-normal",
-                                !field.value && "text-muted-foreground",
-                              )}
-                            >
-                              {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus />
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+              
+<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
 
-                <FormField
-                  control={form.control}
-                  name="endDate"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                      <FormLabel>End Date</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant={"outline"}
-                              className={cn(
-                                "w-full pl-3 text-left font-normal",
-                                !field.value && "text-muted-foreground",
-                              )}
-                            >
-                              {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus />
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+<FormField
+  control={form.control}
+  name="startDate"
+  render={({ field }) => (
+    <FormItem className="flex flex-col">
+      <FormLabel>Start Date</FormLabel>
+      <FormControl>
+        <DatePicker
+          className="w-full"
+          value={field.value ? dayjs(field.value) : null}
+          onChange={(date) => field.onChange(date ? date.toDate() : null)}
+          format="YYYY-MM-DD"
+        />
+      </FormControl>
+      <FormMessage />
+    </FormItem>
+  )}
+/>
+
+{/* End Date Field */}
+<FormField
+  control={form.control}
+  name="endDate"
+  render={({ field }) => (
+    <FormItem className="flex flex-col">
+      <FormLabel>End Date</FormLabel>
+      <FormControl>
+        <DatePicker
+          className="w-full"
+          value={field.value ? dayjs(field.value) : null}
+          onChange={(date) => field.onChange(date ? date.toDate() : null)}
+          format="YYYY-MM-DD"
+        />
+      </FormControl>
+      <FormMessage />
+    </FormItem>
+  )}
+/>
+</div>
 
               <FormField
                 control={form.control}
